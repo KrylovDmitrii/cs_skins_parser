@@ -114,9 +114,17 @@ def main():
             raise InvalidSection('Такой секции скинов нет на сайте')
     else:
         url_section = BASE_URL
-    url = make_url(url_section, sorted_by_hot=args.sorted_by_hot, page=args.pages)
-    page_response_json(url)
-    logging.info(f'Запрос выполнен')
+
+    all_items = []
+    for page in range(1, args.pages + 1):
+        url = make_url(url_section, sorted_by_hot=args.sorted_by_hot, page=page)
+        items = page_response_json(url)
+        all_items.extend(items)
+
+    with open('all_responses.json', 'w', encoding='utf-8') as out_file:
+        json.dump(all_items, out_file, ensure_ascii=False, indent=4)
+
+    logging.info(f'Запросы выполнены на {args.pages} страницах')
 
 
 if __name__ == '__main__':
