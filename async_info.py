@@ -16,7 +16,7 @@ def page_with_selenium(url: str) -> str:
     driver = webdriver.Chrome(service=s)
     try:
         driver.get(url)
-        time.sleep(5)  # Дождитесь загрузки страницы
+        time.sleep(5)
         page_source = driver.page_source
         return page_source
     except Exception as e:
@@ -105,7 +105,7 @@ async def main(base_url: str, sorted_by_hot: bool = True, pages: int = 1):
 
     all_items = [item for sublist in results for item in sublist]
 
-    with open('all__async__responses.json', 'w', encoding='utf-8') as out_file:
+    with open('skins_data/all__async_responses.json', 'w', encoding='utf-8') as out_file:
         json.dump(all_items, out_file, ensure_ascii=False, indent=4)
 
     print(f'Запрос выполнен на {args.pages} страницах')

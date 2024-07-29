@@ -1,15 +1,11 @@
 from typing import Dict, Any, List, Union
-from exceptions import PageQuantity, InvalidSection
-from constants import SECTIONS, BASE_URL
+from constants import CASE_HARDENED_BASE_URL
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import time
-import logging
 import json
 import argparse
-
-logging.basicConfig(level=logging.ERROR)
 
 
 def page_with_seleniun(url: str) -> str:
@@ -17,11 +13,11 @@ def page_with_seleniun(url: str) -> str:
     driver = webdriver.Chrome(service=s)
     try:
         driver.get(url)
-        time.sleep(5)
+        time.sleep(3)
         page_source = driver.page_source
         return page_source
     except Exception as e:
-        logging.error(f'Ошибка при получении страницы: {e}')
+        print(f'Ошибка - {e}')
         raise
     finally:
         driver.close()
@@ -33,8 +29,6 @@ def page_response_json(url: str) -> List[Dict[str, Union[str, List[str]]]]:
     if page_source:
         soup = BeautifulSoup(page_source, 'lxml')
         items = soup.find_all('div', class_='item')
-
-        items_str = '\n\n\n\n\n'.join(str(item) for item in items)
 
         item_list = []
 
@@ -67,57 +61,18 @@ def page_response_json(url: str) -> List[Dict[str, Union[str, List[str]]]]:
         return item_list
 
 
-def make_url(url: str, sorted_by_hot=True, page=1) -> str:
-    if sorted_by_hot:
-        url = f'{url}?sort_by=hot'
-    if page < 1:
-        raise PageQuantity('Количество страниц должно быть больше или равно 1')
-    return f'{url}&page={page}'
-
-
-def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description='Сбор данных с сайта lis-skins.')
-    parser.add_argument(
-        'section',
-        nargs='?',
-        default='',
-        help='Тип скина для выборки (например, "knife", "glove" и т.д).'
-    )
-
-    parser.add_argument(
-        '--sorted_by_hot',
-        type=bool,
-        default=True,
-        help='Сортировать по Горячим ценам (True или False).'
-    )
-    parser.add_argument(
-        '--pages',
-        type=int,
-        default=1,
-        help='Количество страниц для сбора данных.'
-    )
-    return parser.parse_args()
-
-
 def main():
-    args = parse_arguments()
-    if args.section:
-        if args.section in SECTIONS:
-            url_section = f'{BASE_URL}{SECTIONS.get(args.section)}'
-        else:
-            raise InvalidSection('Такой секции скинов нет на сайте')
-    else:
-        url_section = BASE_URL
     all_items = []
-    for page in range(1, args.pages + 1):
-        url = make_url(url_section, sorted_by_hot=args.sorted_by_hot, page=page)
+    pages = 3
+    for page in range(1, pages + 1):
+        url = f'{CASE_HARDENED_BASE_URL}&page={page}'
         items = page_response_json(url)
         all_items.extend(items)
 
-    with open('skins_data/all_responses.json', 'w', encoding='utf-8') as out_file:
+    with open('skins_data/case_hardened.json', 'w', encoding='utf-8') as out_file:
         json.dump(all_items, out_file, ensure_ascii=False, indent=4)
 
-    logging.info(f'Запросы выполнены на {args.pages} страницах')
+    print(f'Запрос скинов "Поверхносткая закалка" выполнен')
 
 
 if __name__ == '__main__':

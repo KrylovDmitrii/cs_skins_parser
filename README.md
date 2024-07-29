@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 ## Установите драйвер Chrome:
 
-Скачайте драйвер [ChromeDriver](https://developer.chrome.com/docs/chromedriver) извлеките его из zip-файла и поместите
+Скачайте драйвер [ChromeDriver](https://developer.chrome.com/docs/chromedriver), извлеките его из zip-файла и поместите
 его в корень проекта. Убедитесь, что путь к драйверу в коде соответствует его расположению на вашем компьютере.
 Соответствующий код:
 
