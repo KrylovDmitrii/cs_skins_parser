@@ -9,7 +9,7 @@ import logging
 import json
 import argparse
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 
 def page_with_seleniun(url: str) -> str:
@@ -17,7 +17,7 @@ def page_with_seleniun(url: str) -> str:
     driver = webdriver.Chrome(service=s)
     try:
         driver.get(url)
-        time.sleep(3)
+        time.sleep(5)
         page_source = driver.page_source
         return page_source
     except Exception as e:
@@ -114,7 +114,6 @@ def main():
             raise InvalidSection('Такой секции скинов нет на сайте')
     else:
         url_section = BASE_URL
-
     all_items = []
     for page in range(1, args.pages + 1):
         url = make_url(url_section, sorted_by_hot=args.sorted_by_hot, page=page)
