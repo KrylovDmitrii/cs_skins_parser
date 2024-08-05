@@ -1,14 +1,16 @@
+import argparse
 import asyncio
 import concurrent.futures
 import json
 import time
-from typing import Dict, Any, List, Union
+from typing import Dict, List, Union
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-import argparse
+
 from constants import BASE_URL, SECTIONS
-from exceptions import PageQuantity, InvalidSection
+from exceptions import InvalidSection, PageQuantity
 
 
 def page_with_selenium(url: str) -> str:
@@ -61,7 +63,6 @@ def parse_page_source(page_source: str) -> List[Dict[str, Union[str, List[str]]]
 
 
 async def get_page_data(url: str) -> List[Dict[str, Union[str, List[str]]]]:
-    print(url)
     loop = asyncio.get_event_loop()
     with concurrent.futures.ThreadPoolExecutor() as pool:
         page_source = await loop.run_in_executor(pool, page_with_selenium, url)
@@ -105,7 +106,7 @@ async def main(base_url: str, sorted_by_hot: bool = True, pages: int = 1):
 
     all_items = [item for sublist in results for item in sublist]
 
-    with open('skins_data/all__async_responses.json', 'w', encoding='utf-8') as out_file:
+    with open('skins_data/all_async_responses.json', 'w', encoding='utf-8') as out_file:
         json.dump(all_items, out_file, ensure_ascii=False, indent=4)
 
     print(f'Запрос выполнен на {args.pages} страницах')
@@ -123,4 +124,3 @@ if __name__ == '__main__':
 
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(main(base_url=url_section, sorted_by_hot=args.sorted_by_hot, pages=args.pages))
-

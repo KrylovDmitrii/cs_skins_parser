@@ -88,5 +88,9 @@ SECTIONS = {
 
 BASE_URL = 'https://lis-skins.ru/market/csgo/'
 
-
 CASE_HARDENED_BASE_URL = 'https://lis-skins.ru/market/csgo/?sort_by=hot&query=case%20hardened'
+
+SKINS_DATA_PATH = {
+    'Выгодные скины': 'skins_data/all_async_responses.json',
+    'Поверхносткая закалка': 'skins_data/case_hardened.json',
+}

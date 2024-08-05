@@ -1,15 +1,14 @@
-from typing import Dict, Any, List, Union
-from exceptions import PageQuantity, InvalidSection
-from constants import SECTIONS, BASE_URL
+import argparse
+import json
+import time
+from typing import Dict, List, Union
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-import time
-import logging
-import json
-import argparse
 
-logging.basicConfig(level=logging.ERROR)
+from constants import BASE_URL, SECTIONS
+from exceptions import InvalidSection, PageQuantity
 
 
 def page_with_seleniun(url: str) -> str:
@@ -17,11 +16,11 @@ def page_with_seleniun(url: str) -> str:
     driver = webdriver.Chrome(service=s)
     try:
         driver.get(url)
-        time.sleep(5)
+        time.sleep(2)
         page_source = driver.page_source
         return page_source
     except Exception as e:
-        logging.error(f'Ошибка при получении страницы: {e}')
+        print(f'Ошибка {e}')
         raise
     finally:
         driver.close()
@@ -33,8 +32,6 @@ def page_response_json(url: str) -> List[Dict[str, Union[str, List[str]]]]:
     if page_source:
         soup = BeautifulSoup(page_source, 'lxml')
         items = soup.find_all('div', class_='item')
-
-        items_str = '\n\n\n\n\n'.join(str(item) for item in items)
 
         item_list = []
 
@@ -116,8 +113,6 @@ def main():
 
     with open('skins_data/all_responses.json', 'w', encoding='utf-8') as out_file:
         json.dump(all_items, out_file, ensure_ascii=False, indent=4)
-
-    logging.info(f'Запросы выполнены на {args.pages} страницах')
 
 
 if __name__ == '__main__':

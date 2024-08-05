@@ -53,7 +53,7 @@ s = Service(executable_path='ваш_путь_до_хромдрайвера')
 **Запуск скрипта:**
 
    ```sh
-   python main.py [section] [--sorted_by_hot] [--pages]
+   python skins_info.py [section] [--sorted_by_hot] [--pages]
    ```
 
 [section] - доступные секции для поиска на сайте.

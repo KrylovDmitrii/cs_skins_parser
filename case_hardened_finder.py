@@ -1,11 +1,12 @@
-from typing import Dict, Any, List, Union
-from constants import CASE_HARDENED_BASE_URL
+import json
+import time
+from typing import Dict, List, Union
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-import time
-import json
-import argparse
+
+from constants import CASE_HARDENED_BASE_URL
 
 
 def page_with_seleniun(url: str) -> str:
@@ -13,7 +14,7 @@ def page_with_seleniun(url: str) -> str:
     driver = webdriver.Chrome(service=s)
     try:
         driver.get(url)
-        time.sleep(3)
+        time.sleep(2)
         page_source = driver.page_source
         return page_source
     except Exception as e:
@@ -72,7 +73,7 @@ def main():
     with open('skins_data/case_hardened.json', 'w', encoding='utf-8') as out_file:
         json.dump(all_items, out_file, ensure_ascii=False, indent=4)
 
-    print(f'Запрос скинов "Поверхносткая закалка" выполнен')
+    print('Запрос скинов "Поверхносткая закалка" выполнен')
 
 
 if __name__ == '__main__':
