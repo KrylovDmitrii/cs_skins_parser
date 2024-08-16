@@ -1,6 +1,7 @@
 import os
 import sys
 import asyncio
+import json
 import logging
 from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
@@ -8,7 +9,10 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from dotenv import load_dotenv
+
 from finder_utils import finder_main
+from collect_skin_info import fetch_and_save_data
+from constants import BASE_URL
 
 load_dotenv()
 
@@ -33,7 +37,28 @@ async def send_skin_notifications() -> None:
     if not skin_to_send:
         return
 
+    try:
+        with open('data/skins_data/sent_skins.json', 'r', encoding='utf-8') as file:
+            sent_skins = json.load(file)
+    except FileNotFoundError:
+        sent_skins = {}
+
+    new_skins = {}
     for category, skins in skin_to_send.items():
+        if not skins:
+            continue
+
+        new_skins[category] = []
+        for skin, description in skins:
+            skin_id = skin.get('Ссылка на товар', '')
+            if skin_id not in sent_skins:
+                new_skins[category].append((skin, description))
+                sent_skins[skin_id] = True
+
+    with open('data/skins_data/sent_skins.json', 'w', encoding='utf-8') as file:
+        json.dump(sent_skins, file, ensure_ascii=False, indent=4)
+
+    for category, skins in new_skins.items():
         if not skins:
             continue
 
@@ -46,8 +71,9 @@ async def send_skin_notifications() -> None:
 
 async def periodic_update() -> None:
     while True:
+        await fetch_and_save_data(base_url=BASE_URL, sorted_by_hot=True, pages=3)
         await send_skin_notifications()
-        await asyncio.sleep(60)
+        await asyncio.sleep(120)
 
 
 async def main() -> None:

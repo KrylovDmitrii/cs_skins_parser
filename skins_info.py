@@ -111,7 +111,7 @@ def main():
         items = page_response_json(url)
         all_items.extend(items)
 
-    with open('skins_data/all_responses.json', 'w', encoding='utf-8') as out_file:
+    with open('data/skins_data/all_responses.json', 'w', encoding='utf-8') as out_file:
         json.dump(all_items, out_file, ensure_ascii=False, indent=4)
 
 

@@ -1,3 +1,5 @@
+# async_info.py
+
 import argparse
 import asyncio
 import concurrent.futures
@@ -76,6 +78,19 @@ def make_url(url: str, sorted_by_hot=True, page=1) -> str:
     return f'{url}?sort_by=hot&page={page}' if sorted_by_hot else f'{url}&page={page}'
 
 
+async def fetch_and_save_data(base_url: str, sorted_by_hot: bool = True, pages: int = 1):
+    urls = [make_url(base_url, sorted_by_hot=sorted_by_hot, page=page) for page in range(1, pages + 1)]
+    tasks = [get_page_data(url) for url in urls]
+    results = await asyncio.gather(*tasks)
+
+    all_items = [item for sublist in results for item in sublist]
+
+    with open('data/skins_data/all_async_responses.json', 'w', encoding='utf-8') as out_file:
+        json.dump(all_items, out_file, ensure_ascii=False, indent=4)
+
+    print(f'Запрос выполнен на {pages} страницах')
+
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Сбор данных с сайта lis-skins.')
     parser.add_argument(
@@ -99,19 +114,6 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-async def main(base_url: str, sorted_by_hot: bool = True, pages: int = 1):
-    urls = [make_url(base_url, sorted_by_hot=sorted_by_hot, page=page) for page in range(1, pages + 1)]
-    tasks = [get_page_data(url) for url in urls]
-    results = await asyncio.gather(*tasks)
-
-    all_items = [item for sublist in results for item in sublist]
-
-    with open('skins_data/all_async_responses.json', 'w', encoding='utf-8') as out_file:
-        json.dump(all_items, out_file, ensure_ascii=False, indent=4)
-
-    print(f'Запрос выполнен на {args.pages} страницах')
-
-
 if __name__ == '__main__':
     args = parse_arguments()
     if args.section:
@@ -123,4 +125,4 @@ if __name__ == '__main__':
         url_section = BASE_URL
 
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main(base_url=url_section, sorted_by_hot=args.sorted_by_hot, pages=args.pages))
+    asyncio.run(fetch_and_save_data(base_url=url_section, sorted_by_hot=args.sorted_by_hot, pages=args.pages))
