@@ -48,12 +48,12 @@ pip install -r requirements.txt
 s = Service(executable_path='ваш_путь_до_хромдрайвера')
 ```
 
-## Использование
+## Использование скрипта через терминал
 
 **Запуск скрипта:**
 
    ```sh
-   python skins_info.py [section] [--sorted_by_hot] [--pages]
+   python collect_skin_info.py [section] [--sorted_by_hot] [--pages]
    ```
 
 [section] - доступные секции для поиска на сайте.
@@ -61,6 +61,21 @@ s = Service(executable_path='ваш_путь_до_хромдрайвера')
 [--sorted_by_hot] - сортировка по скидке от цены стима (По умолчанию включена)
 
 [--pages] - количество страниц, с которых берутся данные
+
+## Использование через Телерам
+
+**Создайте .env файл у себя локально с содержанием:**
+
+   ```sh
+   TELEGRAM_API_TOKEN='телеграм_токен_бота'
+   TELEGRAM_CHAT_ID='id_чата_в_телегам'
+   ```
+**Запуск скрипта**
+
+   ```sh
+   python notify_telegram.py 
+   ```
+
 
 ## Лицензия
 

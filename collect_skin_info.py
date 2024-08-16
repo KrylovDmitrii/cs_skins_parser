@@ -1,5 +1,3 @@
-# async_info.py
-
 import argparse
 import asyncio
 import concurrent.futures
