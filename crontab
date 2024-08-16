@@ -1,6 +1,0 @@
-# Запускаем async_info.py каждую минуту
-* * * * * root python /app/async_info.py >> /var/log/cron.log 2>&1
-
-# Запускаем case_hardened_finder.py каждые 5 минут
-*/5 * * * * root python /app/case_hardened_finder.py >> /var/log/cron.log 2>&1
-
