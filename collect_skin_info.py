@@ -8,6 +8,7 @@ from typing import Dict, List, Union
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 from constants import BASE_URL, SECTIONS
 from exceptions import InvalidSection, PageQuantity
