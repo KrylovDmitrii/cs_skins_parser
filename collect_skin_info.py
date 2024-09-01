@@ -15,8 +15,14 @@ from exceptions import InvalidSection, PageQuantity
 
 
 def page_with_selenium(url: str) -> str:
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument(
+        "user-agent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0"
+    )
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--headless")
     s = Service(executable_path='chromedriver-win32/chromedriver.exe')
-    driver = webdriver.Chrome(service=s)
+    driver = webdriver.Chrome(service=s, options=chrome_options)
     try:
         driver.get(url)
         time.sleep(5)
